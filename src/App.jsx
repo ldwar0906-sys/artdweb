@@ -34,8 +34,8 @@ const generateProjects = () => {
     if (!subCategories || subCategories.length === 0) {
       // 소분류가 없는 카테고리 (브랜딩, 웹 콘텐츠)
       imagesOrIds.forEach((item, index) => {
-        const val = isVideo ? item?.id : item;
-        if (!val || val.trim() === "") return;
+        const val = isVideo ? (typeof item === 'object' ? item.id : item) : item;
+        if (!val || String(val).trim() === "") return;
 
         const videoId = isVideo ? (typeof item === 'object' ? item.id : item) : undefined;
         const startParam = isVideo && item?.start ? `&start=${item.start}` : "";
@@ -58,8 +58,8 @@ const generateProjects = () => {
       subCategories.forEach(sub => {
         const specificList = imagesOrIds[sub] || [];
         specificList.forEach((item, index) => {
-          const val = isVideo ? item?.id : item;
-          if (!val || val.trim() === "") return;
+          const val = isVideo ? (typeof item === 'object' ? item.id : item) : item;
+          if (!val || String(val).trim() === "") return;
 
           const videoId = isVideo ? (typeof item === 'object' ? item.id : item) : undefined;
           const startParam = isVideo && item?.start ? `&start=${item.start}` : "";
@@ -81,23 +81,14 @@ const generateProjects = () => {
     }
   };
 
+  // ⭐️ 확장자 데이터 (로컬 이미지 파일과 정확히 일치해야 함)
+  const catalogExts = ['jpg', 'png', 'png', 'jpg', 'png', 'jpg', 'jpg', 'jpg', 'png', 'png', 'jpg', 'jpg', 'jpg', 'png'];
+
   // --- [1. 편집디자인 이미지 리스트] ---
   const editorialImages = {
     "카달로그·브로슈어": [
-      "https://postfiles.pstatic.net/MjAyNDA4MzBfNyAg/MDAxNzI0OTc5NzY0MDA4.Q1XIr62XSDAazqWq5Ze5ROrX7xG6DkidoAPb2Dg6zEog.qQ3gyCYb730OtYKzCD4FwpRTI76gpsl1xPG6xo-qW84g.PNG/1.png?type=w580", // 1번 MTS
-      "https://postfiles.pstatic.net/MjAyNTAzMTZfMTk0/MDAxNzQyMTMyMTg5NTQ2.P34eO0qiuXEXjw6Jj2ZMusV_3AbWvRQvMFrQTY-73yUg.a-IxqepSm8bkx6QvC4cwURVSLh06pk5uWLBXzWlvrgYg.JPEG/2.jpg?type=w580", // 2번 
-      "https://postfiles.pstatic.net/MjAyNDEyMjBfMjAy/MDAxNzM0NjU5NDY4MjA4.X_g5_bihm0wnahMvjgnHJ-axm3USjohyIq_NU07uZy0g.UhAFuFdbZKgRU0PdlbLggGEWAbB0rghO_LQewQ2UoKgg.PNG/%EB%AA%A9%EC%97%851.png?type=w580", // 3번
-      "https://postfiles.pstatic.net/MjAyNTA4MTZfMjE3/MDAxNzU1MzE0NDk2NTQ0.CBzXBRlqrIIhwdyboMeFwzzMbb-_wwJLyvkJWsn1JOog.cqRP8ERtLaIGvHU5lXYY0YNf2235QlwrYKgC_a4WWAIg.JPEG/%ED%91%9C%EC%A7%80_%EB%AA%A9%EC%97%85.jpg?type=w580", // 4번
-      "https://postfiles.pstatic.net/MjAyNTA4MTZfMTMx/MDAxNzU1MzM0NzYxODA4.352VLPmBZEd6R2pXfgmH_N2iXsr0Ff24ngOEJJUf23Yg.ZWsRA2UthGTTXq4kuN-4OUrgbfuxaeskMc1qb2fkokcg.JPEG/%EB%AA%A9%EC%97%85.jpg?type=w580", // 5번
-      "https://postfiles.pstatic.net/MjAyNTAzMjNfMjkx/MDAxNzQyNzI1MjAyODcy.YW2Gre3LPINh3OWj_U4ksWDJvK9SRuEGqnHj333rEJ0g._JlqvNSqxXnL-yD1V9ZGbpLzTyxcXGgVqplQJ9wXU_0g.JPEG/1-2.jpg?type=w580", // 6번
-      "https://postfiles.pstatic.net/MjAyNDAzMTZfMzAg/MDAxNzEwNTk4Mjk2OTI2.yi12dkSFLIDqy3podaPYq3g6YCtzlONxHoFUTVvW2vMg.52MzduVca2DeXsDMqWvUPQej5MW4r_J5tLq7eM71gxEg.JPEG/1.jpg?type=w580", // 7번
-      "https://postfiles.pstatic.net/MjAyNDEyMDhfMTc1/MDAxNzMzNjM0MTg3ODUw.NfYen-iilQVjRhT89lX7AsEfX-qwVY5R4UrMrg0mdVog.J7ubWL1oEuUn7Ayhw94mc4pg6KJk-mXnm21Dii3Fz7wg.PNG/%EB%AA%A9%EC%97%851.png?type=w580", // 8번
-      "https://postfiles.pstatic.net/MjAyNTAyMjFfMTUx/MDAxNzQwMTIwMTkzOTA2.A5bEITFUKN0BZfZxdfmfX2RKyubB7zQ9f6CK6ztv1LEg.aTKV_U-Wpmayr_vXAcX0FYlTPT15WltTc1djohtGq9kg.PNG/1.png?type=w580", // 9번
-      "https://postfiles.pstatic.net/MjAyNTA0MDFfMTE5/MDAxNzQzNTE4MTYxMDU5.N_FOSTjp-5LFESQMm2lF0UslztZ1zlF9ILcUePFPh4Eg.wPeZohBdq8FvXZCvN7ubP9vkC_YlrSzkBYsdOQdTjX0g.JPEG/2.jpg?type=w580", // 10번
-      "https://postfiles.pstatic.net/MjAyNjAzMjBfMjE4/MDAxNzczOTM2OTI1MTAy.eSWa-2N1zgKSUooBvDTzyt7jFW0shc2llnnkotHIXNIg.TS8qmTVgU32xTp5Kru2-ilDugXxafKaHEgLFV4dX1Bkg.PNG/9.png?type=w3840", // 11번
-      "https://postfiles.pstatic.net/MjAyNTAzMDhfMjk3/MDAxNzQxNDEyMDE0NTU0.wMzgMT1YkrPkw-OnuXjVaad8HAq8OTa2oseu4tqzxAQg.q9eAgLieTEo3BrL9LzMbCA8Uy44-tjS2SIAud57xFnog.JPEG/5.jpg?type=w580", // 12번
-      "https://postfiles.pstatic.net/MjAyNTA2MDNfMSAg/MDAxNzQ4OTUzODU2ODg4.oO8HrsYebL6o_RXpV9XwrhuQ9IAkpGTe5PDb5sjWYUQg.WSRBj3gj8-kTxXvNmzZSaG1qkFNupITCysBjTxwGqgwg.PNG/%EB%AA%A9%EC%97%851.png?type=w580", // 13번 경남대학교 모집요강
-      "", // 14번
+      // ⭐️ 변경된 폴더명 'Catalog n Brochure' 적용
+      ...catalogExts.map((ext, i) => `/images/EDITORIAL/Catalog n Brochure/${i + 1}.${ext}`), // 1~14번 자동생성
       "", // 15번
       "", // 16번
       "", // 17번
@@ -405,9 +396,9 @@ const App = () => {
           <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-20" style={{ backgroundColor: `${brandColor}E6` }}>
             <div className="text-center px-8">
               <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-slate-900 mx-auto mb-4 transition-transform group-hover:scale-110 shadow-lg">
-                {isVideo ? <Youtube size={28} className="text-[#FF0000]" /> : <ArrowUpRight size={24} />}
+                {project.youtubeId ? <Youtube size={28} className="text-[#FF0000]" /> : <ArrowUpRight size={24} />}
               </div>
-              <p className="text-sm font-bold tracking-widest text-white uppercase font-pretendard">{isVideo ? 'Play Video' : 'View Detail'}</p>
+              <p className="text-sm font-bold tracking-widest text-white uppercase font-pretendard">{project.youtubeId ? 'Play Video' : 'View Detail'}</p>
             </div>
           </div>
         </div>
@@ -417,7 +408,7 @@ const App = () => {
             {project.subCategory && <span className="text-[10px] text-slate-500 font-medium px-1.5 py-0.5 border border-slate-700 rounded-sm">{project.subCategory}</span>}
           </div>
           <h3 className="text-2xl font-bold mb-2 group-hover:text-[#EE7123] transition-colors tracking-tight text-white">{project.title}</h3>
-          <p className="text-slate-500 font-medium text-sm">{project.year} | {isVideo ? 'Motion Film' : 'Visual Solution'}</p>
+          <p className="text-slate-500 font-medium text-sm">{project.year} | {project.youtubeId ? 'Motion Film' : 'Visual Solution'}</p>
         </div>
       </div>
     );
@@ -473,10 +464,10 @@ const App = () => {
                 <div className="w-12 h-12 rounded-full border border-slate-700 flex items-center justify-center group-hover:border-[#EE7123] group-hover:bg-[#EE7123] transition-all"><ArrowLeft size={20} /></div>
                 <span className="font-bold tracking-widest uppercase text-xs font-pretendard">Back</span>
               </button>
-              <div className="flex items-center space-x-2 font-pretendard"><LayoutGrid size={18} className="text-[#EE7123]" /><span className="text-white font-black tracking-widest text-xs uppercase">{activeCategoryData?.kr} Archive</span></div>
+              <div className="flex items-center space-x-2 font-pretendard"><LayoutGrid size={18} className="text-[#EE7123]" /><span className="text-white font-black tracking-widest text-xs uppercase">{activeCategory} ARCHIVE ({filteredProjects.length})</span></div>
             </div>
             <div className="mb-16 font-pretendard">
-              <h2 className="text-4xl md:text-6xl font-black tracking-tighter italic text-white mb-8 uppercase">{viewAllTitle} Works</h2>
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter italic text-white mb-12 uppercase">{activeCategory} Works</h2>
               <div className="flex flex-wrap gap-4 relative z-20">
                 {categoryData.map((cat) => (
                   <button key={`archive-${cat.id}`} onClick={() => handleCategoryClick(cat.id)} className={`group relative h-12 overflow-hidden px-8 rounded-full border transition-all tracking-widest ${activeCategory === cat.id ? 'bg-[#EE7123] border-[#EE7123] text-white shadow-lg' : 'border-white/10 text-slate-400 hover:text-white hover:border-white/30'}`}>
@@ -590,6 +581,7 @@ const App = () => {
         </div>
       </section>
 
+      {/* 푸터 */}
       <footer className="bg-slate-900 text-white py-12 border-t border-white/5 font-pretendard">
         <div className="max-w-[1600px] mx-auto px-6 lg:px-12 flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left font-pretendard">
           <div className="flex items-baseline gap-1"><span className="font-black text-2xl" style={{ color: brandColor }}>ART</span><span className="font-light text-2xl" style={{ color: brandColor }}>DESIGN</span></div>
