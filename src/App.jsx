@@ -29,6 +29,8 @@ const Linkedin = ({ size = 24, ...props }) => (
 const generateProjects = () => {
   const projects = [];
   let idCounter = 1;
+  // 깃허브 배포 경로 (저장소 이름이 artdweb이므로 반드시 포함되어야 합니다)
+  const base = "/artdweb";
 
   const addCategoryDocs = (category, subCategories, imagesOrIds, descSuffix, isVideo = false) => {
     if (!subCategories || subCategories.length === 0) {
@@ -81,14 +83,14 @@ const generateProjects = () => {
     }
   };
 
-  // ⭐️ 확장자 데이터 (로컬 이미지 파일과 정확히 일치해야 함)
-  const catalogExts = ['jpg', 'png', 'png', 'jpg', 'png', 'jpg', 'jpg', 'jpg', 'png', 'png', 'jpg', 'jpg', 'jpg', 'png'];
+  // 확장자 데이터 (실제 public/images/EDITORIAL/CatalogBrochure/ 폴더 내 파일과 일치해야 함)
+  const catalogExts = ['jpg', 'png', 'png', 'png', 'png', 'png', 'png', 'png', 'png', 'png', 'png', 'png', 'png', 'png'];
 
   // --- [1. 편집디자인 이미지 리스트] ---
   const editorialImages = {
     "카달로그·브로슈어": [
-      // ⭐️ 변경된 폴더명 'Catalog n Brochure' 적용
-      ...catalogExts.map((ext, i) => `/images/EDITORIAL/Catalog n Brochure/${i + 1}.${ext}`), // 1~14번 자동생성
+      // 폴더명을 CatalogBrochure로 고정하고 공백을 제거했습니다.
+      ...catalogExts.map((ext, i) => `${base}/images/EDITORIAL/CatalogBrochure/${i + 1}.${ext}`), 
       "", // 15번
       "", // 16번
       "", // 17번
@@ -455,7 +457,7 @@ const App = () => {
         </div>
       )}
 
-      {/* 아카이브 오버레이 */}
+      {/* 아카이브 오버레이 (VIEW ALL 화면) */}
       {showArchive && (
         <div className="fixed inset-0 bg-slate-950 z-[400] overflow-y-auto animate-in slide-in-from-bottom duration-500">
           <div className="max-w-[1600px] mx-auto px-6 lg:px-12 py-12">
@@ -581,7 +583,6 @@ const App = () => {
         </div>
       </section>
 
-      {/* 푸터 */}
       <footer className="bg-slate-900 text-white py-12 border-t border-white/5 font-pretendard">
         <div className="max-w-[1600px] mx-auto px-6 lg:px-12 flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left font-pretendard">
           <div className="flex items-baseline gap-1"><span className="font-black text-2xl" style={{ color: brandColor }}>ART</span><span className="font-light text-2xl" style={{ color: brandColor }}>DESIGN</span></div>
