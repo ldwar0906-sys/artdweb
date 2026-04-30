@@ -266,7 +266,7 @@ const App = () => {
   return (
     <div className="min-h-screen bg-white text-slate-900 font-pretendard selection:bg-[#EE7123] selection:text-white scroll-smooth overflow-x-hidden relative font-pretendard">
       
-      {/* 팝업 오버레이 (새로운 통합 스크롤 레이아웃) */}
+      {/* 팝업 오버레이 (새로운 중앙 정렬 통스크롤 레이아웃) */}
       {selectedProject && (
         <div className="fixed inset-0 bg-white z-[500] overflow-y-auto custom-scrollbar animate-in fade-in duration-300 font-pretendard">
           
@@ -302,7 +302,7 @@ const App = () => {
               </button>
             </div>
 
-            {/* 하단 이미지 영역 (크게 통으로 1단 스크롤 배치) */}
+            {/* 하단 이미지 영역 (크게 통으로 스크롤 배치) */}
             <div className="w-full rounded-[32px] overflow-hidden shadow-2xl bg-slate-50 border border-slate-100 flex flex-col animate-in slide-in-from-bottom duration-1000 delay-150 fill-mode-both">
               {selectedProject.youtubeId ? (
                  <div className="relative w-full aspect-video shrink-0 bg-black">
@@ -365,6 +365,7 @@ const App = () => {
         </div>
       </nav>
 
+      {/* Hero */}
       <section id="home" className="relative h-screen flex items-center bg-slate-950 font-pretendard">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=1600')] bg-cover bg-center opacity-40 animate-subtle-zoom" />
         <div className="relative z-10 max-w-[1600px] mx-auto px-6 lg:px-12 text-white font-pretendard">
