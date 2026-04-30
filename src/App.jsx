@@ -8,10 +8,10 @@ import {
   Search, 
   Globe as GlobeIcon, 
   Play, 
-  FileText,
-  ArrowLeft,
-  Tag,
-  LayoutGrid,
+  FileText, 
+  ArrowLeft, 
+  Tag, 
+  LayoutGrid, 
   Youtube // 유튜브 아이콘
 } from 'lucide-react';
 
@@ -29,10 +29,12 @@ const Linkedin = ({ size = 24, ...props }) => (
 const generateProjects = () => {
   const projects = [];
   let idCounter = 1;
+  
+  // ⭐️ 저장소 이름 직접 지정
+  const baseUrl = "/artdweb"; 
 
   const addCategoryDocs = (category, subCategories, imagesOrIds, descSuffix, isVideo = false) => {
     if (!subCategories || subCategories.length === 0) {
-      // 소분류가 없는 카테고리 (브랜딩, 웹 콘텐츠)
       imagesOrIds.forEach((item, index) => {
         const val = isVideo ? (typeof item === 'object' ? item.id : item) : item;
         if (!val || String(val).trim() === "") return;
@@ -54,7 +56,6 @@ const generateProjects = () => {
         });
       });
     } else {
-      // 소분류가 있는 카테고리 (편집, 사인물, 영상)
       subCategories.forEach(sub => {
         const specificList = imagesOrIds[sub] || [];
         specificList.forEach((item, index) => {
@@ -81,14 +82,23 @@ const generateProjects = () => {
     }
   };
 
-  // ⭐️ 확장자 데이터 (로컬 이미지 파일과 정확히 일치해야 함)
-  const catalogExts = ['jpg', 'png', 'png', 'jpg', 'png', 'jpg', 'jpg', 'jpg', 'png', 'png', 'jpg', 'jpg', 'jpg', 'png'];
-
   // --- [1. 편집디자인 이미지 리스트] ---
   const editorialImages = {
     "카달로그·브로슈어": [
-      // ⭐️ 변경된 폴더명 'Catalog n Brochure' 적용
-      ...catalogExts.map((ext, i) => `/images/EDITORIAL/Catalog n Brochure/${i + 1}.${ext}`), // 1~14번 자동생성
+      `${baseUrl}/images/EDITORIAL/CatalogBrochure/1.jpg`, // 1번
+      `${baseUrl}/images/EDITORIAL/CatalogBrochure/2.png`, // 2번
+      `${baseUrl}/images/EDITORIAL/CatalogBrochure/3.png`, // 3번
+      `${baseUrl}/images/EDITORIAL/CatalogBrochure/4.jpg`, // 4번
+      `${baseUrl}/images/EDITORIAL/CatalogBrochure/5.png`, // 5번
+      `${baseUrl}/images/EDITORIAL/CatalogBrochure/6.jpg`, // 6번
+      `${baseUrl}/images/EDITORIAL/CatalogBrochure/7.jpg`, // 7번
+      `${baseUrl}/images/EDITORIAL/CatalogBrochure/8.jpg`, // 8번
+      `${baseUrl}/images/EDITORIAL/CatalogBrochure/9.png`, // 9번
+      `${baseUrl}/images/EDITORIAL/CatalogBrochure/10.png`, // 10번
+      `${baseUrl}/images/EDITORIAL/CatalogBrochure/11.jpg`, // 11번
+      `${baseUrl}/images/EDITORIAL/CatalogBrochure/12.jpg`, // 12번
+      `${baseUrl}/images/EDITORIAL/CatalogBrochure/13.jpg`, // 13번
+      `${baseUrl}/images/EDITORIAL/CatalogBrochure/14.png`, // 14번
       "", // 15번
       "", // 16번
       "", // 17번
@@ -97,8 +107,8 @@ const generateProjects = () => {
       ""  // 20번
     ],
     "리플렛·팜플렛": [
-      "https://postfiles.pstatic.net/MjAyNjAzMzFfMjQy/MDAxNzc0OTQ2MTk0NzI4.UH819Dgj_59tdY6oWjJAKX4BcHUypryxcGGfwMeCvUUg.Xs3Pl71L_uEUwi7HE1ht0W87VhdZX1AuwL7FtvKgLU4g.PNG/image.png?type=w3840", // 1번
-      "https://images.unsplash.com/photo-1586075010633-2470ac2023ca?q=80&w=800", // 2번
+      "", // 1번
+      "", // 2번
       "", // 3번
       "", // 4번
       "", // 5번
@@ -119,7 +129,7 @@ const generateProjects = () => {
       ""  // 20번
     ],
     "포스터": [
-      "https://images.unsplash.com/photo-1541462608143-67571c6738dd?q=80&w=800", // 1번
+      "", // 1번
       "", // 2번
       "", // 3번
       "", // 4번
@@ -145,7 +155,7 @@ const generateProjects = () => {
 
   // --- [2. CI·BI 브랜딩 이미지 리스트] ---
   const brandingImages = [
-    "https://images.unsplash.com/photo-1559136555-9303baea8ebd?q=80&w=800", // 1번
+    "", // 1번
     "", // 2번
     "", // 3번
     "", // 4번
@@ -171,7 +181,7 @@ const generateProjects = () => {
   // --- [3. 실·내외 사인물 이미지 리스트] ---
   const signageImages = {
     "간판·시트지": [
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800", // 1번
+      "", // 1번
       "", // 2번
       "", // 3번
       "", // 4번
@@ -193,7 +203,7 @@ const generateProjects = () => {
       ""  // 20번
     ],
     "현수막·배너": [
-      "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=800", // 1번
+      "", // 1번
       "", // 2번
       "", // 3번
       "", // 4번
@@ -219,7 +229,7 @@ const generateProjects = () => {
 
   // --- [4. 웹 콘텐츠 이미지 리스트] ---
   const webImages = [
-    "https://images.unsplash.com/photo-1611162616475-46b635cbca85?q=80&w=800", // 1번
+    "", // 1번
     "", // 2번
     "", // 3번
     "", // 4번
@@ -245,7 +255,7 @@ const generateProjects = () => {
   // --- [5. 영상제작 유튜브 ID 리스트] ---
   const videoIds = {
     "홍보영상": [
-      { id: "jNQXAC9IVRw" }, // 1번
+      { id: "" }, // 1번
       { id: "" }, // 2번
       { id: "" }, // 3번
       { id: "" }, // 4번
@@ -270,7 +280,7 @@ const generateProjects = () => {
       { id: "hsS_3X64YbE", start: 3248 }, // 1번
       { id: "Abh9eKQcIuE" },             // 2번
       { id: "FOOkzuEfwXk", start: 874 },  // 3번
-      { id: "yYfLUnz4tpM" },             // 4번
+      { id: "" }, // 4번
       { id: "" }, // 5번
       { id: "" }, // 6번
       { id: "" }, // 7번
@@ -289,7 +299,7 @@ const generateProjects = () => {
       { id: "" }  // 20번
     ],
     "행사영상": [
-      { id: "kJQP7kiw5Fk" }, // 1번
+      { id: "" }, // 1번
       { id: "" }, // 2번
       { id: "" }, // 3번
       { id: "" }, // 4번
@@ -455,7 +465,7 @@ const App = () => {
         </div>
       )}
 
-      {/* 아카이브 오버레이 */}
+      {/* 아카이브 오버레이 (VIEW ALL 화면) */}
       {showArchive && (
         <div className="fixed inset-0 bg-slate-950 z-[400] overflow-y-auto animate-in slide-in-from-bottom duration-500">
           <div className="max-w-[1600px] mx-auto px-6 lg:px-12 py-12">
@@ -581,7 +591,6 @@ const App = () => {
         </div>
       </section>
 
-      {/* 푸터 */}
       <footer className="bg-slate-900 text-white py-12 border-t border-white/5 font-pretendard">
         <div className="max-w-[1600px] mx-auto px-6 lg:px-12 flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left font-pretendard">
           <div className="flex items-baseline gap-1"><span className="font-black text-2xl" style={{ color: brandColor }}>ART</span><span className="font-light text-2xl" style={{ color: brandColor }}>DESIGN</span></div>
