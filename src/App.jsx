@@ -14,7 +14,7 @@ import {
   Youtube 
 } from 'lucide-react';
 
-// --- [1. 스마트 썸네일 컴포넌트 (jpg -> png 자동 시도)] ---
+// --- [1. 스마트 썸네일 컴포넌트 (에러 시 전체 카드 숨김 연동)] ---
 const SmartImage = ({ srcBase, alt, onHide }) => {
   const [ext, setExt] = useState('jpg');
   const [errorCount, setErrorCount] = useState(0);
@@ -26,7 +26,7 @@ const SmartImage = ({ srcBase, alt, onHide }) => {
       setErrorCount(1);
     } else {
       setIsVisible(false);
-      if (onHide) onHide();
+      if (onHide) onHide(); // 이미지 두 확장자 모두 없으면 부모에게 알림 (카드 삭제)
     }
   };
 
@@ -54,7 +54,7 @@ const SmartSeriesImage = ({ srcBase, index, onSuccess }) => {
       setExt('png');
       setErrorCount(1);
     } else {
-      setIsVisible(false);
+      setIsVisible(false); // 상세 페이지에서 끊기면 렌더링만 멈춤
     }
   };
 
@@ -98,15 +98,15 @@ const Facebook = ({ size = 24, ...props }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
 );
 
-// --- [포트폴리오 데이터 생성 (폴더 연동)] ---
+// --- [포트폴리오 데이터 생성] ---
 const generateProjects = () => {
   const projects = [];
   let idCounter = 1;
-  const baseUrl = ""; // 개인 도메인 연결 시 공백 필수
+  const baseUrl = ""; 
 
-  // 폴더 개수 생성기 (예: count가 16이면 no1~no16까지 생성)
+  // 자동 생성을 넉넉하게 20개씩 세팅해둡니다. (없는 폴더는 알아서 투명처리됨)
   const getIds = (count) => {
-     const arr = Array.from({ length: 20 }, () => "");
+     const arr = Array.from({ length: count }, () => "");
      for(let i=0; i<count; i++) arr[i] = `no${i+1}`;
      return arr;
   };
@@ -121,9 +121,9 @@ const generateProjects = () => {
             subCategory: sub,
             isSmart: true,
             isSeries: true,
-            srcBase: `${baseUrl}${data.path}/${id}/${id}_1`, // 썸네일: 예) no1/no1_1
-            seriesBasePath: `${baseUrl}${data.path}/${id}`,  // 상세 베이스 경로: 예) no1/
-            seriesPrefix: id,                                // 접두어: 예) no1
+            srcBase: `${baseUrl}${data.path}/${id}/${id}_1`, 
+            seriesBasePath: `${baseUrl}${data.path}/${id}`,  
+            seriesPrefix: id,                                
             title: `${sub} 작업 ${id.replace('no', '')}`,
             year: "2024",
             description: `${sub} 기획 및 디자인 결과물입니다.`
@@ -133,22 +133,22 @@ const generateProjects = () => {
     });
   };
 
-  // ⭐️ 여기서 숫자를 조절하세요! (카달로그 폴더가 no1부터 no14까지 있다면 getIds(14))
+  // ⭐️ 모두 20개로 넉넉하게 세팅 완료 (실제 폴더가 없으면 에러없이 사라짐)
   const editorialData = {
-    "카달로그·브로슈어": { path: "/images/EDITORIAL/CatalogBrochure", ids: getIds(14) },
-    "리플렛·팜플렛": { path: "/images/EDITORIAL/LeafletPamphlet", ids: getIds(0) },
-    "포스터": { path: "/images/EDITORIAL/Poster", ids: getIds(0) }
+    "카달로그·브로슈어": { path: "/images/EDITORIAL/CatalogBrochure", ids: getIds(20) },
+    "리플렛·팜플렛": { path: "/images/EDITORIAL/LeafletPamphlet", ids: getIds(20) },
+    "포스터": { path: "/images/EDITORIAL/Poster", ids: getIds(20) }
   };
   addSmartSeries("EDITORIAL", editorialData);
 
   const signageData = {
-    "간판·시트지": { path: "/images/SIGNAGE/SignboardSheet", ids: getIds(0) },
-    "현수막·배너": { path: "/images/SIGNAGE/Banner", ids: getIds(0) }
+    "간판·시트지": { path: "/images/SIGNAGE/SignboardSheet", ids: getIds(20) },
+    "현수막·배너": { path: "/images/SIGNAGE/Banner", ids: getIds(20) }
   };
   addSmartSeries("SIGNAGE", signageData);
 
   const webData = {
-    "웹 콘텐츠": { path: "/images/WEB/Contents", ids: getIds(0) }
+    "웹 콘텐츠": { path: "/images/WEB/Contents", ids: getIds(20) }
   };
   addSmartSeries("WEB", webData);
 
@@ -183,6 +183,9 @@ const App = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [showArchive, setShowArchive] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  // ⭐️ 에러난(폴더가 없는) 아이템의 ID를 기록하는 저장소
+  const [failedIds, setFailedIds] = useState(new Set());
 
   const brandColor = "#EE7123";
 
@@ -209,13 +212,26 @@ const App = () => {
     { id: 'VIDEO', kr: '영상제작', sub: [] }
   ];
 
-  const filteredProjects = allProjects.filter(p => {
+  // 실패한 아이템(failedIds)은 배열에서 완전히 제거합니다.
+  const validProjects = allProjects.filter(p => !failedIds.has(p.id));
+
+  const filteredProjects = validProjects.filter(p => {
     const matchCategory = activeCategory === 'ALL' || p.category === activeCategory;
     const matchSubCategory = activeSubCategory === '전체' || p.subCategory === activeSubCategory;
     return matchCategory && matchSubCategory;
   });
 
   const displayedProjects = filteredProjects.slice(0, 12);
+
+  // 이미지 로드 실패 시 상태 업데이트 함수 (카드와 카운트에서 삭제)
+  const handleProjectFail = (id) => {
+    setFailedIds(prev => {
+      if (prev.has(id)) return prev;
+      const newSet = new Set(prev);
+      newSet.add(id);
+      return newSet;
+    });
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -239,14 +255,14 @@ const App = () => {
     document.body.style.overflow = (selectedProject || showArchive) ? 'hidden' : 'unset';
   }, [selectedProject, showArchive]);
 
-  const ProjectCard = ({ project }) => (
+  const ProjectCard = ({ project, onFail }) => (
     <div onClick={() => setSelectedProject(project)} className="group cursor-pointer font-pretendard animate-in fade-in slide-in-from-bottom duration-700">
       <div className="relative aspect-[4/5] overflow-hidden rounded-2xl mb-6 bg-slate-800 shadow-2xl border border-white/5">
         <div className="absolute inset-0 flex items-center justify-center bg-slate-900"><span className="text-slate-700 font-bold uppercase tracking-widest text-[10px]">ArtDesign Visual</span></div>
         {project.isSmart ? (
-          <SmartImage srcBase={project.srcBase} alt={project.title} />
+          <SmartImage srcBase={project.srcBase} alt={project.title} onHide={onFail} />
         ) : (
-          <img src={project.img} alt={project.title} className="relative w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 z-10" />
+          <img src={project.img} alt={project.title} onError={onFail} className="relative w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 z-10" />
         )}
         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-20" style={{ backgroundColor: `${brandColor}E6` }}>
           <div className="text-center px-8">
@@ -270,7 +286,6 @@ const App = () => {
       {selectedProject && (
         <div className="fixed inset-0 bg-white z-[500] overflow-y-auto custom-scrollbar animate-in fade-in duration-300 font-pretendard">
           
-          {/* 상단 닫기 영역 (고정 헤더) */}
           <div className="sticky top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
             <div className="max-w-[1600px] mx-auto px-6 lg:px-12 py-4 flex justify-between items-center">
               <button onClick={() => setSelectedProject(null)} className="flex items-center space-x-3 text-slate-400 hover:text-slate-900 group">
@@ -280,10 +295,7 @@ const App = () => {
             </div>
           </div>
 
-          {/* 컨텐츠 영역 */}
           <div className="max-w-[1200px] mx-auto px-6 lg:px-12 py-16 flex flex-col items-center">
-            
-            {/* 상단 텍스트 정보 (중앙 정렬) */}
             <div className="flex flex-col items-center text-center mb-16 animate-in slide-in-from-bottom duration-700">
               <div className="flex items-center space-x-4 mb-6">
                 <span className="px-5 py-2 bg-orange-50 text-[#EE7123] rounded-full text-xs font-black tracking-widest uppercase shadow-sm">
@@ -302,14 +314,12 @@ const App = () => {
               </button>
             </div>
 
-            {/* 하단 이미지 영역 (크게 통으로 스크롤 배치) */}
             <div className="w-full rounded-[32px] overflow-hidden shadow-2xl bg-slate-50 border border-slate-100 flex flex-col animate-in slide-in-from-bottom duration-1000 delay-150 fill-mode-both">
               {selectedProject.youtubeId ? (
                  <div className="relative w-full aspect-video shrink-0 bg-black">
                    <iframe className="absolute top-0 left-0 w-full h-full" src={`https://www.youtube.com/embed/${selectedProject.youtubeId}?autoplay=1${selectedProject.startParam}`} frameBorder="0" allowFullScreen></iframe>
                  </div>
               ) : selectedProject.isSeries ? (
-                // 여러장 자동 출력 컴포넌트
                 <SeriesImageContainer project={selectedProject} />
               ) : selectedProject.isSmart ? (
                 <SmartImage srcBase={selectedProject.srcBase} alt={selectedProject.title} />
@@ -317,7 +327,6 @@ const App = () => {
                 <img src={selectedProject.img} alt={selectedProject.title} className="w-full h-auto block object-cover" />
               )}
             </div>
-
           </div>
         </div>
       )}
@@ -347,7 +356,12 @@ const App = () => {
               </div>
             </div>
             <div className="mb-6 text-slate-400 text-sm font-bold tracking-widest uppercase font-pretendard">Showing: <span className="text-white">{filteredProjects.length}</span> Projects</div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12 pb-24 font-pretendard">{filteredProjects.map((project) => (<ProjectCard key={project.id} project={project} />))}</div>
+            {/* 카드에 onFail 전달하여 껍데기 삭제 연동 */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12 pb-24 font-pretendard">
+              {filteredProjects.map((project) => (
+                <ProjectCard key={project.id} project={project} onFail={() => handleProjectFail(project.id)} />
+              ))}
+            </div>
           </div>
         </div>
       )}
@@ -409,7 +423,13 @@ const App = () => {
             </div>
           )}
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10 font-pretendard">{displayedProjects.map((project) => (<ProjectCard key={project.id} project={project} />))}</div>
+          {/* 카드에 onFail 전달하여 껍데기 삭제 연동 */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10 font-pretendard">
+            {displayedProjects.map((project) => (
+              <ProjectCard key={project.id} project={project} onFail={() => handleProjectFail(project.id)} />
+            ))}
+          </div>
+
           {filteredProjects.length > 12 && (
             <div className="flex justify-center mt-20 border-t border-white/10 pt-16 font-pretendard">
               <button onClick={() => setShowArchive(true)} className="px-12 py-5 font-bold tracking-widest uppercase border-2 border-slate-700 rounded-full hover:border-[#EE7123] hover:bg-[#EE7123] transition-all flex items-center group font-pretendard">View All {activeCategory} ({filteredProjects.length})<ArrowUpRight className="ml-2 group-hover:rotate-45 transition-transform" /></button>
