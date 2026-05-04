@@ -137,7 +137,7 @@ const generateProjects = () => {
   // 현재 no1, no2 폴더가 있으므로 getIds(2)로 설정했습니다.
   // 나중에 no3 폴더를 추가하시면 getIds(3)으로 숫자만 바꿔주시면 됩니다.
   const editorialData = {
-    "카달로그·브로슈어": { path: "/images/EDITORIAL/CatalogBrochure", ids: getIds(2) },
+    "카달로그·브로슈어": { path: "/images/EDITORIAL/CatalogBrochure", ids: getIds(4) },
     "리플렛·팜플렛": { path: "/images/EDITORIAL/LeafletPamphlet", ids: getIds(0) },
     "포스터": { path: "/images/EDITORIAL/Poster", ids: getIds(0) }
   };
