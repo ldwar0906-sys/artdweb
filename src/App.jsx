@@ -126,13 +126,13 @@ const generateProjects = () => {
 
   const addSmartSeries = (category, dataMap) => {
     Object.entries(dataMap).forEach(([sub, data]) => {
-      data.ids.forEach((item) => {
+      // ⭐️ 최신순 배치를 위해 원본을 해치지 않고 역순([...data.ids].reverse())으로 순회
+      [...data.ids].reverse().forEach((item) => {
         if (!item) return;
 
         let folderName = "";
         let displayTitle = "";
 
-        // ⭐️ [기능 추가] item이 문자열이면 기존 방식, 객체면 커스텀 제목 방식
         if (typeof item === 'string' && item.trim()) {
           folderName = item;
           const underscoreIndex = folderName.indexOf('_');
@@ -141,7 +141,7 @@ const generateProjects = () => {
           } else {
             displayTitle = `${sub} 작업 ${folderName.replace('no', '')}`;
           }
-        } else if (typeof item === 'object') {
+        } else if (typeof item === 'object' && item.folder) {
           folderName = item.folder;
           displayTitle = item.title;
         }
@@ -163,32 +163,35 @@ const generateProjects = () => {
     });
   };
 
-  // ⭐️ [포트폴리오 폴더 및 제목 설정하는 곳] ⭐️
+  // 1. EDITORIAL
   const editorialData = {
     "카달로그·브로슈어": { 
       path: "/images/EDITORIAL/CatalogBrochure", 
       ids: [
-        { folder: "no1_경남대학교 캡스톤디자인 운영 매뉴얼북", title: "경남대학교 캡스톤디자인 운영 매뉴얼북 38P" },
-        { folder: "no2_경상남도 응급의료지원단 CI매뉴얼북", title: "경상남도응급의료지원단 CI 매뉴얼북 24P" },
-        { folder: "no3_경상남도 자립지원전담기관 소식지", title: "경상남도자립지원전담기관 소식지 20P" },
-        { folder: "no4_울산광역시 어린이독서체험관 캐릭터 매뉴얼북", title: "울산광역시 어린이독서체험관 캐릭터 매뉴얼북 20P" },
-        { folder: "no5_이플로우 카달로그", title: "기업 이플로우 카달로그 32P" },
-        { folder: "no6_SM 엔지니어링 카달로그", title: "기업 SM엔지니어링 카달로그 32P" },
+        { folder: "no1_태양테크 회사소개서", title: "기업 태양테크 회사소개서 28P" },
+        { folder: "no2_웰템 카달로그", title: "기업 웰템 카달로그 32P" },
+        { folder: "no3_원진 BMT", title: "기업 원진 BMT 32P" },
+        { folder: "no4_세덕종합벨트 카달로그", title: "기업 세덕종합벨트 카달로그 28P" },
+        { folder: "no5_서현 카달로그", title: "기업 서현 카달로그 24P" },
+        { folder: "no6_모드텍 카달로그", title: "기업 모드텍 카달로그 24P" },
         { folder: "no7_MTS 카달로그", title: "기업 MTS 카달로그 48P" },
-        { folder: "no8_모드텍 카달로그", title: "기업 모드텍 카달로그 24P" },
-        { folder: "no9_서현 카달로그", title: "기업 서현 카달로그 24P" },
-        { folder: "no10_세덕종합벨트 카달로그", title: "기업 세덕종합벨트 카달로그 28P" },
-        { folder: "no11_원진 BMT", title: "기업 원진 BMT 32P" },
-        { folder: "no12_웰템 카달로그", title: "기업 웰템 카달로그 32P" },
-        { folder: "no13_태양테크 회사소개서", title: "기업 태양테크 회사소개서 28P" }
+        { folder: "no8_SM 엔지니어링 카달로그", title: "기업 SM엔지니어링 카달로그 32P" },
+        { folder: "no9_이플로우 카달로그", title: "기업 이플로우 카달로그 32P" },
+        { folder: "no10_울산광역시 어린이독서체험관 캐릭터 매뉴얼북", title: "울산광역시 어린이독서체험관 캐릭터 매뉴얼북 20P" },
+        { folder: "no11_경상남도 자립지원전담기관 소식지", title: "경상남도자립지원전담기관 소식지 20P" },
+        { folder: "no12_경상남도 응급의료지원단 CI매뉴얼북", title: "경상남도응급의료지원단 CI 매뉴얼북 24P" },
+        { folder: "no13_경남대학교 캡스톤디자인 운영 매뉴얼북", title: "경남대학교 캡스톤디자인 운영 매뉴얼북 38P" },
+        { folder: "no14_ENI 브로슈어", title: "ENI 모빌리티 브로슈어20P"},
+        { folder: "no15_매뉴얼북", title: "ENI 모빌리티 매뉴얼북 32P"},
+        { folder: "", title: ""},
       ] 
     },
     "리플렛·팜플렛": { 
       path: "/images/EDITORIAL/LeafletPamphlet", 
       ids: [
-        { folder: "no1_몽골어 경남대학교 외국인 특별전형 모집 리플렛", title: "경남대학교 외국인 특별전형 모집 대문접지 리플렛 몽골어 버전" },
-        { folder: "no2_영문 경남대학교 외국인 특별전형 모집 리플렛", title: "경남대학교 외국인 특별전형 모집 대문접지 리플렛 영어 버전" },
-        { folder: "no3_중문 _몽골어 경남대학교 외국인 특별전형 모집 리플렛", title: "경남대학교 외국인 특별전형 모집 대문접지 리플렛 중국어 버전" },
+        { folder: "no1_뮤지컬공연 팜플렛 8p_고운초등학교 팜플렛", title: "뮤지컬공연 팜플렛 8p_고운초등학교 팜플렛" },
+        { folder: "no2_미술전시_강현정 작가 리플렛", title: "미술전시_강현정 작가 리플렛" },
+        { folder: "no3_미술전시_정현숙 작가 리플렛", title: "미술전시_정현숙 작가 리플렛" },
         { folder: "no4_함안대산중학교 대문접지형 리플렛", title: "함안대산중학교 대문접지형 리플렛" },
         { folder: "no5_3. 창신대학교_문덕수문학관 리플렛", title: "창신대학교_문덕수문학관 리플렛" },
         { folder: "no6_4. 제품소개서 리플렛_타일회사 동양석재", title: "타일회사 동양석재 리플렛" },
@@ -208,9 +211,11 @@ const generateProjects = () => {
         { folder: "no20_국악공연_가인 3단 리플렛 6P", title: "국악공연_가인 3단 리플렛 6P" },
         { folder: "no21_기업 홍보 리플렛 제작_금오산업", title: "기업 홍보 리플렛 제작_금오산업" },
         { folder: "no22_무용단체_춤터별진 눈이부시게 공연 리플렛", title: "무용단체_춤터별진 눈이부시게 공연 리플렛" },
-        { folder: "no23_뮤지컬공연 팜플렛 8p_고운초등학교 팜플렛", title: "뮤지컬공연 팜플렛 8p_고운초등학교 팜플렛" },
-        { folder: "no24_미술전시_강현정 작가 리플렛", title: "미술전시_강현정 작가 리플렛" },
-        { folder: "no25_미술전시_정현숙 작가 리플렛", title: "미술전시_정현숙 작가 리플렛" }
+        { folder: "no23_몽골어 경남대학교 외국인 특별전형 모집 리플렛", title: "경남대학교 외국인 특별전형 모집 대문접지 리플렛 몽골어 버전" },
+        { folder: "no24_영문 경남대학교 외국인 특별전형 모집 리플렛", title: "경남대학교 외국인 특별전형 모집 대문접지 리플렛 영어 버전" },
+        { folder: "no25_중문 _몽골어 경남대학교 외국인 특별전형 모집 리플렛", title: "경남대학교 외국인 특별전형 모집 대문접지 리플렛 중국어 버전" },
+        { folder: "no26_ENI 리플렛", title: "ENI 모빌리티 리플렛"},
+        { folder: "", title: ""},
       ] 
     },
     "홍보물·패키지": { 
@@ -224,28 +229,23 @@ const generateProjects = () => {
         { folder: "no6_꼬숩", title: "꼬숩땅콩 전단지" },
         { folder: "no7_고기집 메뉴판", title: "고깃집_순희식당 메뉴판" },
         { folder: "no8_한별 봉투 디자인", title: "한별반려동물장례식장 봉투 디자인" },
-        { folder: "no9_헬시드리치", title: "헬시드리치" },
-        { folder: "", title: "" },
-        { folder: "", title: "" },
-        { folder: "", title: "" },
+        { folder: "no9_헬시드리치", title: "헬시드리치" }
       ] 
     }
   };
   addSmartSeries("EDITORIAL", editorialData);
 
+  // 2. SIGNAGE
   const signageData = {
     "간판·시트지": { 
       path: "/images/SIGNAGE/SignboardSheet", 
       ids: [
-        { folder: "no1_울산 어린이독서체험관 실외", title: "울산광역시 어린이독서체험관.No1" },
-        { folder: "no2_울산 어린이독서체험관 실내", title: "울산광역시 어린이독서체험관.No2" },
-        { folder: "no3_울산 어린이독서체험관 시트지", title: "울산광역시 어린이독서체험관.NO3" },
-        { folder: "no4_갈바에 부식 느낌", title: "갈바 부식 간판" },
-        { folder: "no5_채널간판, 프레임 다양", title: "채널 간판 작업물" },
-        { folder: "no6_조형물 및 구조물 등", title: "조형물 및 구조물" },
-        { folder: "", title: "" },
-        { folder: "", title: "" },
-        { folder: "", title: "" },
+        { folder: "no1_조형물 및 구조물 등", title: "조형물 및 구조물" },
+        { folder: "no2_채널간판, 프레임 다양", title: "채널 간판 작업물" },
+        { folder: "no3_갈바에 부식 느낌", title: "갈바 부식 간판" },
+        { folder: "no4_울산 어린이독서체험관 시트지", title: "울산광역시 어린이독서체험관.NO3" },
+        { folder: "no5_울산 어린이독서체험관 실내", title: "울산광역시 어린이독서체험관.No2" },
+        { folder: "no6_울산 어린이독서체험관 실외", title: "울산광역시 어린이독서체험관.No1" }
       ] 
     },
     "현수막·배너": { 
@@ -267,36 +267,35 @@ const generateProjects = () => {
         { folder: "no14_고등학교 축제 현수막", title: "창원토월고등학교 축제 현수막" },
         { folder: "no15_행사 강연 현수막", title: "행사, 강연 현수막" },
         { folder: "no16_기업 박람회 현수막", title: "기업 박람회 현수막" },
-        { folder: "no17_해남126 호텔 현수막", title: "해남126 호텔 현수막" },
+        { folder: "no17_해남126 호텔 현수막", title: "해남126 호텔 현수막" }
       ] 
     }
   };
   addSmartSeries("SIGNAGE", signageData);
 
+  // 3. WEB
   const webData = { 
     "웹 콘텐츠": { 
       path: "/images/WEB/Contents", 
       ids: [
-        { folder: "no1_경상남도탄소중립지원센터 카드 뉴스 2회차", title: "경상남도탄소중립지원센터 카드뉴스_2회차" },
-        { folder: "no2_경상남도탄소중립지원센터 카드 뉴스 4회차", title: "경상남도탄소중립지원센터 카드뉴스_4회차" },
-        { folder: "no3_경상남도 도시탐사대", title: "경상남도 도시탐사대 카드뉴스" },
-        { folder: "no4_노블핏", title: "노블핏 쉐이크 상세페이지" },
-        { folder: "no5_시너지애드", title: "시너지애드 상세페이지" },
-        { folder: "no6_우브로 상세페이지", title: "우브로 상세페이지" },
-        { folder: "", title: "" },
+        { folder: "no1_우브로 상세페이지", title: "우브로 상세페이지" },
+        { folder: "no2_시너지애드", title: "시너지애드 상세페이지" },
+        { folder: "no3_노블핏", title: "노블핏 쉐이크 상세페이지" },
+        { folder: "no4_경상남도 도시탐사대", title: "경상남도 도시탐사대 카드뉴스" },
+        { folder: "no5_경상남도탄소중립지원센터 카드 뉴스 4회차", title: "경상남도탄소중립지원센터 카드뉴스_4회차" },
+        { folder: "no6_경상남도탄소중립지원센터 카드 뉴스 2회차", title: "경상남도탄소중립지원센터 카드뉴스_2회차" }
       ] 
     } 
   };
   addSmartSeries("WEB", webData);
 
-  // ⭐️ [브랜딩 데이터 로컬 연동] ⭐️
-  // 기존 하드코딩 배열을 삭제하고 다른 탭처럼 스마트 로딩 방식을 적용했습니다.
+  // 4. BRANDING
   const brandingData = {
     "브랜딩": {
       path: "/images/BRANDING",
       ids: [
-        { folder: "no1_울산어린이독서체험관", title: "울산어린이독서체험관 브랜딩"},
-        { folder: "no2_경상남도응급의료지원단 ci 개발", title: "경상남도응급의료지원단 ci 개발"},
+        { folder: "no1_경남문화콘텐츠협회 CI 로고 개발", title: "경남문화콘텐츠협회 CI 로고 개발"},
+        { folder: "no2_퓨전음식주점 용이집 BI로고 개발", title: "퓨전음식주점 용이집 BI로고 개발"},
         { folder: "no3_경상북도 시립중산자이어린이집 ci 개발", title: "경상북도 시립중산자이어린이집 ci 개발"},
         { folder: "no4_수영복 브랜드 WNA 브랜드 로고 개발", title: "수영복 브랜드 WNA 브랜드 로고 개발"},
         { folder: "no5_의류브랜드 헬시드리치 브랜드 의류 그래픽 디자인 및 패키지 홍보물 제작", title: "의류브랜드 헬시드리치 브랜드 의류 그래픽 디자인 및 패키지 홍보물 제작"},
@@ -305,17 +304,14 @@ const generateProjects = () => {
         { folder: "no8_인테리어 회사 원픽 CI개발", title: "인테리어 회사 원픽 CI개발"},
         { folder: "no9_실버들캘리그라피협회 로고 파일 모음", title: "실버들캘리그라피협회 로고 파일 모음"},
         { folder: "no10_건 구조기술사사무소 로고 개발", title: "건 구조기술사사무소 로고 개발"},
-        { folder: "no11_퓨전음식주점 용이집 BI로고 개발", title: "퓨전음식주점 용이집 BI로고 개발"},
-        { folder: "no12_경남문화콘텐츠협회 CI 로고 개발", title: "경남문화콘텐츠협회 CI 로고 개발"},
-        { folder: "", title: ""},
-        // 필요시 이곳에 다음과 같은 양식으로 추가하세요.
-        // { folder: "no1_브랜딩작업", title: "브랜딩 프로젝트 1" },
+        { folder: "no11_경상남도응급의료지원단 ci 개발", title: "경상남도응급의료지원단 ci 개발"},
+        { folder: "no12_울산어린이독서체험관", title: "울산어린이독서체험관 브랜딩"}
       ]
     }
   };
   addSmartSeries("BRANDING", brandingData);
 
-  // ⭐️ [영상 제작 (YouTube) 세부 카테고리 분류] ⭐️
+  // 5. VIDEO
   const videoData = {
     "공연,행사": [
       { id: "hsS_3X64YbE", title: "공연 영상 제작_혼인대첩 우첨지댁 경사" },
@@ -339,7 +335,7 @@ const generateProjects = () => {
   };
 
   Object.entries(videoData).forEach(([sub, videos]) => {
-    videos.forEach((v, i) => {
+    [...videos].reverse().forEach((v, i) => {
       if (v && v.id && v.id.trim()) {
         projects.push({ 
           id: idCounter++, 
